@@ -21,5 +21,3 @@ with open("td.htm",  'r', encoding='cp1251', errors='ignore') as file:
 pc_user_name_element = soup.find(string="Компьютер  ").find_next().text
 
 print(pc_user_name_element)
-##gkf
-##dfudfuh
