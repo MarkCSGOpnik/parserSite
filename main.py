@@ -22,3 +22,4 @@ pc_user_name_element = soup.find(string="Компьютер  ").find_next().te
 
 print(pc_user_name_element)
 ##gkf
+##dfudfuh
