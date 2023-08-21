@@ -38,9 +38,17 @@ print(cpu)
 
 storagePc = soup.find_all(string="Размер  ")
 
+sumRam=0
+
 for item in storagePc:
-    unit = item.find_next().text.replace(item.split()[0], "")
-    print(unit)
-    if unit != "МБ":
-        print(item.find_next().text)
+    if "ГБ" in item.find_next().text:
+        sizeCpu=item.find_next().text.replace("ГБ","")
+        sumRam+=int(sizeCpu)
+
+ram=str(sumRam)
+ram+=" ГБ"
+print(ram)
+
+TypeRam=soup.find(string="Тип памяти  ").find_next().text
+print(TypeRam)
 
