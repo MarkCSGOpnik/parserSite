@@ -1,11 +1,12 @@
 import re
 import math
 from bs4 import BeautifulSoup
+from openpyxl import load_workbook
 import requests
 import os
 
 
-with open("admin2.htm",  'r', encoding='cp1251', errors='ignore') as primaryFile:
+with open("C:\\Users\\user\\PycharmProjects\\pythonProject\\all.htm\\1904-adm.htm", 'r', encoding='cp1251', errors='ignore') as primaryFile:
     soup = BeautifulSoup(primaryFile, "lxml")
 
 page = soup.find_all("td")
@@ -22,7 +23,7 @@ pcUserName = soup.find(string="Компьютер  ").find_next().text
 
 print(pcUserName)
 
-computerType = soup.find(string=("Тип компьютера  ")).find_next().text
+computerType = soup.find(string="Тип компьютера  ").find_next().text
 
 substringMobile = "Mobile"
 
@@ -49,7 +50,11 @@ ram = str(sumRam)
 ram += " ГБ"
 print(ram)
 
-TypeRam = soup.find(string="Тип памяти  ").find_next().text
+type_ram_element = soup.find(string="Форм-фактор  ")
+if type_ram_element:
+    TypeRam = type_ram_element.find_next().find_next().find_next().find_next().find_next().find_next().text
+else:
+    TypeRam = "нет"
 print(TypeRam)
 
 searchMotherboard = soup.find_all(string="Версия  ")
@@ -60,7 +65,7 @@ for item in searchMotherboard:
         motherBoard = str(item.find_next().text)
         print(motherBoard)
 
-rangeNum=0
+rangeNum = 0
 
 diskAll = soup.find_all(string="Дисковый накопитель  ")
 
@@ -83,7 +88,11 @@ for item in operation:
     if rangeNum == 2:
         operationSystem = item.find_next().text
         print(operationSystem)
-
+if "64" in soup.find(string="Тестовый модуль  ").find_next().text:
+    bit = "64"
+else:
+    bit = "32"
+print(bit)
 
 
 
