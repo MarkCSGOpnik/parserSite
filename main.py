@@ -4,95 +4,113 @@ from bs4 import BeautifulSoup
 from openpyxl import load_workbook
 import requests
 import os
+import chardet
 
+load_parsing = 'C:\\Users\\user\\PycharmProjects\\pythonProject\\parsing.xlsx'
+parsing_list = load_workbook(load_parsing)
+parsing = parsing_list['list1']
 
-with open("C:\\Users\\user\\PycharmProjects\\pythonProject\\all.htm\\1904-adm.htm", 'r', encoding='cp1251', errors='ignore') as primaryFile:
-    soup = BeautifulSoup(primaryFile, "lxml")
+folder_path = "all.htm"
 
-page = soup.find_all("td")
+num_all = 2
 
-page_str = str(page)
+path = "C:\\\\Users\\\\user\\\\PycharmProjects\\\\pythonProject\\\\all.htm\\\\"
 
-with open("td.htm", "w") as tdFile:
-    tdFile.write(page_str)
+for filename in os.listdir(folder_path):
+    file_path = os.path.join(folder_path, filename)
+    new_file_path = file_path.replace("all.htm\\", "")
+    all_path = path + new_file_path
+    print(all_path)
 
-with open("td.htm",  'r', encoding='cp1251', errors='ignore') as tdFile:
-    soup = BeautifulSoup(tdFile, "lxml")
+    with open(all_path, 'r', encoding='cp1251', errors='ignore') as primaryFile:
+        soup = BeautifulSoup(primaryFile, "lxml")
 
-pc_user_name = soup.find(string="Компьютер  ").find_next().text
+    page = soup.find_all("td")
 
-print(pc_user_name)
+    page_str = str(page)
 
-computer_type = soup.find(string="Тип компьютера  ").find_next().text
+    with open("td.htm", "w") as tdFile:
+        tdFile.write(page_str)
 
-substring_mobile = "Mobile"
+    with open("td.htm",  'r', encoding='cp1251', errors='ignore') as tdFile:
+        soup = BeautifulSoup(tdFile, "lxml")
 
-if substring_mobile in computer_type:
-    pc_or_mobile = "Ноутбук"
-else:
-    pc_or_mobile = "Компьютер"
+    pc_user_name = soup.find(string="Компьютер  ").find_next().text
 
-print(pc_or_mobile)
+    parsing["C" + str(num_all)] = pc_user_name
 
-cpu = soup.find(string="Тип ЦП  ").find_next().text
-print(cpu)
+    computer_type = soup.find(string="Тип компьютера  ").find_next().text
 
-storagePc = soup.find_all(string="Размер  ")
+    substring_mobile = "Mobile"
 
-sum_ram = 0
+    if substring_mobile in computer_type:
+        pc_or_mobile = "Ноутбук"
+    else:
+        pc_or_mobile = "Компьютер"
 
-for item in storagePc:
-    if "ГБ" in item.find_next().text:
-        sizeCpu = item.find_next().text.replace("ГБ", "")
-        sum_ram += int(sizeCpu)
+    pc_or_mobile_in = "G" + str(num_all)
+    parsing[pc_or_mobile_in] = pc_or_mobile
+    cpu = soup.find(string="Тип ЦП  ").find_next().text
 
-ram = str(sum_ram)
-ram += " ГБ"
-print(ram)
+    parsing["H" + str(num_all)] = cpu
 
-type_ram_element = soup.find(string="Форм-фактор  ")
-if type_ram_element:
-    type_ram = type_ram_element.find_next().find_next().find_next().find_next().find_next().find_next().text
-else:
-    type_ram = "нет"
-print(type_ram)
+    storagePc = soup.find_all(string="Размер  ")
 
-search_motherboard = soup.find_all(string="Версия  ")
-range_num = 0
-for item in search_motherboard:
-    range_num += 1
-    if range_num == 3:
-        motherboard = str(item.find_next().text)
-        print(motherboard)
+    sum_ram = 0
 
-range_num = 0
+    for item in storagePc:
+        if "ГБ" in item.find_next().text:
+            sizeCpu = item.find_next().text.replace("ГБ", "")
+            sum_ram += int(sizeCpu)
 
-disk_all = soup.find_all(string="Дисковый накопитель  ")
+    ram = str(sum_ram)
+    ram += " ГБ"
 
-for item in disk_all:
-    if "ГБ" in item.find_next().text:
-        if "SSD" in item.find_next().text:
-            print(item.find_next().text)
-            ssd_disk = item.find_next().text
-        else:
-            if not "USB" in item.find_next().text:
-                print(item.find_next().text)
-                disk = item.find_next().text
+    type_ram_element = soup.find(string="Форм-фактор  ")
+    if type_ram_element:
+        type_ram = type_ram_element.find_next().find_next().find_next().find_next().find_next().find_next().text
+    else:
+        type_ram = ""
 
-video_card = soup.find(string="Видеоадаптер  ").find_next().text
-print(video_card)
+    parsing["I" + str(num_all)] = ram + " " + type_ram
 
-operation = soup.find_all(string="Операционная система  ")
-for item in operation:
-    range_num += 1
-    if range_num == 2:
-        operation_system = item.find_next().text
-        print(operation_system)
-if "64" in soup.find(string="Тестовый модуль  ").find_next().text:
-    bit = "64"
-else:
-    bit = "32"
-print(bit)
+    search_motherboard = soup.find_all(string="Версия  ")
+    range_num = 0
+    for item in search_motherboard:
+        range_num += 1
+        if range_num == 3:
+            motherboard = str(item.find_next().text)
+            parsing["J" + str(num_all)] = motherboard
 
+    range_num = 0
+
+    disk_all = soup.find_all(string="Дисковый накопитель  ")
+
+    for item in disk_all:
+        if "ГБ" in item.find_next().text:
+            if "SSD" in item.find_next().text:
+                ssd_disk = item.find_next().text
+                parsing["K" + str(num_all)] = ssd_disk
+            else:
+                if not "USB" in item.find_next().text:
+                    disk = item.find_next().text
+                    parsing["K" + str(num_all)] = disk
+
+    video_card = soup.find(string="Видеоадаптер  ").find_next().text
+    parsing["M" + str(num_all)] = video_card
+
+    operation = soup.find_all(string="Операционная система  ")
+    for item in operation:
+        range_num += 1
+        if range_num == 2:
+            operation_system = item.find_next().text
+            parsing["N" + str(num_all)] = operation_system
+    if "64" in soup.find(string="Тестовый модуль  ").find_next().text:
+        bit = str("64")
+    else:
+        bit = str("32")
+    parsing["O" + str(num_all)] = bit
+    num_all += 1
+parsing.save(load_parsing)
 
 
