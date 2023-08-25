@@ -96,7 +96,7 @@ for filename in os.listdir(folder_path):
             else:
                 if not "USB" in item.find_next().text:
                     disk = item.find_next().text
-                    parsing["K" + str(num_all)] = disk
+                    parsing["L" + str(num_all)] = disk
 
     video_card = soup.find(string="Видеоадаптер  ").find_next().text
 
