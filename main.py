@@ -2,12 +2,14 @@ import re
 import math
 from bs4 import BeautifulSoup
 from openpyxl import load_workbook
+import openpyxl
+from openpyxl.workbook import Workbook
 import requests
 import os
 import chardet
 
-load_parsing = 'C:\\Users\\user\\PycharmProjects\\pythonProject\\parsing.xlsx'
-parsing_list = load_workbook(load_parsing)
+parsing_list = openpyxl.load_workbook('parsing.xlsx')
+sheet = parsing_list.active
 parsing = parsing_list['list1']
 
 folder_path = "all.htm"
@@ -37,7 +39,9 @@ for filename in os.listdir(folder_path):
 
     pc_user_name = soup.find(string="Компьютер  ").find_next().text
 
-    parsing["C" + str(num_all)] = pc_user_name
+    parsing['C' + str(num_all)] = pc_user_name
+
+    parsing.save('parsing.xlsx')
 
     computer_type = soup.find(string="Тип компьютера  ").find_next().text
 
@@ -52,7 +56,9 @@ for filename in os.listdir(folder_path):
     parsing[pc_or_mobile_in] = pc_or_mobile
     cpu = soup.find(string="Тип ЦП  ").find_next().text
 
-    parsing["H" + str(num_all)] = cpu
+    parsing['H' + str(num_all)] = cpu
+
+    parsing.save('parsing.xlsx')
 
     storagePc = soup.find_all(string="Размер  ")
 
@@ -72,7 +78,9 @@ for filename in os.listdir(folder_path):
     else:
         type_ram = ""
 
-    parsing["I" + str(num_all)] = ram + " " + type_ram
+    parsing['I' + str(num_all)] = ram + " " + type_ram
+
+    parsing.save('parsing.xlsx')
 
     search_motherboard = soup.find_all(string="Версия  ")
     range_num = 0
@@ -97,20 +105,26 @@ for filename in os.listdir(folder_path):
                     parsing["K" + str(num_all)] = disk
 
     video_card = soup.find(string="Видеоадаптер  ").find_next().text
-    parsing["M" + str(num_all)] = video_card
+
+    parsing['M' + str(num_all)] = video_card
+
+    parsing.save('parsing.xlsx')
 
     operation = soup.find_all(string="Операционная система  ")
     for item in operation:
         range_num += 1
         if range_num == 2:
             operation_system = item.find_next().text
-            parsing["N" + str(num_all)] = operation_system
+            parsing['N' + str(num_all)] = operation_system
     if "64" in soup.find(string="Тестовый модуль  ").find_next().text:
         bit = str("64")
     else:
         bit = str("32")
     parsing["O" + str(num_all)] = bit
+
+    parsing.save('parsing.xlsx')
+
     num_all += 1
-parsing.save(load_parsing)
+
 
 
