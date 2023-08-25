@@ -41,8 +41,6 @@ for filename in os.listdir(folder_path):
 
     parsing['C' + str(num_all)] = pc_user_name
 
-    parsing.save('parsing.xlsx')
-
     computer_type = soup.find(string="Тип компьютера  ").find_next().text
 
     substring_mobile = "Mobile"
@@ -57,8 +55,6 @@ for filename in os.listdir(folder_path):
     cpu = soup.find(string="Тип ЦП  ").find_next().text
 
     parsing['H' + str(num_all)] = cpu
-
-    parsing.save('parsing.xlsx')
 
     storagePc = soup.find_all(string="Размер  ")
 
@@ -79,8 +75,6 @@ for filename in os.listdir(folder_path):
         type_ram = ""
 
     parsing['I' + str(num_all)] = ram + " " + type_ram
-
-    parsing.save('parsing.xlsx')
 
     search_motherboard = soup.find_all(string="Версия  ")
     range_num = 0
@@ -108,8 +102,6 @@ for filename in os.listdir(folder_path):
 
     parsing['M' + str(num_all)] = video_card
 
-    parsing.save('parsing.xlsx')
-
     operation = soup.find_all(string="Операционная система  ")
     for item in operation:
         range_num += 1
@@ -122,9 +114,9 @@ for filename in os.listdir(folder_path):
         bit = str("32")
     parsing["O" + str(num_all)] = bit
 
-    parsing.save('parsing.xlsx')
-
     num_all += 1
+
+parsing_list.save('parsing.xlsx')
 
 
 
